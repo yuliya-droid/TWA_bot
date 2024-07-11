@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Бронирование каяков</title>
+</head>
+<body>
+    <h1>Бронирование каяков</h1>
+    <form id="bookingForm">
+        <label for="date">Дата и время:</label>
+        <input type="datetime-local" id="date" name="date" required><br><br>
+        <input type="submit" value="Забронировать">
+    </form>
+    <script>
+        document.getElementById('bookingForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const date = document.getElementById('date').value;
+            Telegram.WebApp.sendData(date); // Отправляем данные обратно боту
+        });
+    </script>
+</body>
+</html>
