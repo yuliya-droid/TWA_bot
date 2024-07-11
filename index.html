@@ -7,21 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        // Функция для отправки данных бронирования в Telegram Web App
-        function sendBookingData(date, time) {
-            const data = { date: date, time: time };
-            Telegram.WebApp.sendData(JSON.stringify(data));
-        }
-
-        // Обработчик события при загрузке страницы
-        document.addEventListener("DOMContentLoaded", () => {
-            // Обработчик события для кнопки "Забронировать"
-            document.getElementById("submit").addEventListener("click", () => {
-                const date = document.getElementById("date").value;
-                const time = document.getElementById("time").value;
-                sendBookingData(date, time);
-            });
-        });
+        // Ваши скрипты здесь
     </script>
 </head>
 <body>
@@ -39,6 +25,25 @@
             <br>
             <button type="button" id="submit">Забронировать</button>
         </form>
+
+        <!-- Таблица с бронированием каяков -->
+        <table id="booking-table">
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Время</th>
+                    <th>Количество доступных каяков</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Здесь будут строки с данными из Google Таблицы -->
+            </tbody>
+        </table>
+
+        <!-- Фотография под таблицей -->
+        <div class="photo">
+            <img src="path/to/your/photo.jpg" alt="Фото каяка">
+        </div>
     </main>
 
     <footer>
