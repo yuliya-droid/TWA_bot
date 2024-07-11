@@ -65,3 +65,12 @@ form button:hover {
     padding-top: 20px;
 }
 
+.photo {
+    text-align: center; /* Центрирование содержимого */
+    margin-top: 20px; /* Отступ сверху */
+}
+
+.photo img {
+    max-width: 100%; /* Максимальная ширина изображения */
+    height: auto; /* Автоматическая высота для сохранения пропорций */
+}
