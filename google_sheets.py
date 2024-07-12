@@ -3,16 +3,22 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
-def read_data_from_google_sheets():
-    # Подключение к Google Sheets
+def book_kayak_in_google_sheets(date, time, kayak_type, quantity):
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
     credentials = ServiceAccountCredentials.from_json_keyfile_name('path_to_your_service_account_key.json', scope)
     gc = gspread.authorize(credentials)
 
-    # Открытие таблицы
-    spreadsheet_id = 'your_spreadsheet_id'
-    sheet = gc.open_by_key(spreadsheet_id).sheet1
+    spreadsheet_id = '1Tw6GGkbsTkv9RsI_9yJ5t2BxFgrJ6KdQV-W1exhBNFQ'
+    sheet = gc.open_by_key(spreadsheet_id).worksheet('Admin')
 
-    # Пример чтения данных
-    data = sheet.get_all_records()
-    return data
+    records = sheet.get_all_records()
+
+    for i, record in enumerate(records):
+        if record['Дата'] == date and record['Время'] == time:
+            if kayak_type == 'Одноместный каяк':
+                sheet.update_cell(i + 2, 3, quantity)
+            elif kayak_type == 'Двухместный каяк':
+                sheet.update_cell(i + 2, 4, quantity)
+            elif kayak_type == 'САП':
+                sheet.update_cell(i + 2, 5, quantity)
+            break
