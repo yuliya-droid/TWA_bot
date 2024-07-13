@@ -14,13 +14,13 @@
                 const singleKayakQuantity = document.getElementById('single-kayak-quantity').value;
                 const doubleKayakQuantity = document.getElementById('double-kayak-quantity').value;
                 const sapKayakQuantity = document.getElementById('sap-kayak-quantity').value;
-                
+
                 const data = {
                     date,
                     time,
-                    singleKayakQuantity,
-                    doubleKayakQuantity,
-                    sapKayakQuantity
+                    singleKayakQuantity: parseInt(singleKayakQuantity),
+                    doubleKayakQuantity: parseInt(doubleKayakQuantity),
+                    sapKayakQuantity: parseInt(sapKayakQuantity)
                 };
 
                 fetch('https://script.google.com/macros/s/AKfycbxWJZRv2qPtfe9tGq9qP75sKBeamGyYwTPm7hFkFutexwK6RVM1m122ZhPMQ1CmKbb4/exec', {
@@ -31,26 +31,28 @@
                     body: JSON.stringify(data)
                 })
                 .then(response => response.json())
-                .then(data => {
-                    console.log('Response:', data);
-                    // Обновление таблицы бронирований
-                    const tableBody = document.getElementById('booking-table').getElementsByTagName('tbody')[0];
-                    const newRow = tableBody.insertRow();
-                    const dateCell = newRow.insertCell(0);
-                    const timeCell = newRow.insertCell(1);
-                    const singleKayakCell = newRow.insertCell(2);
-                    const doubleKayakCell = newRow.insertCell(3);
-                    const sapKayakCell = newRow.insertCell(4);
-                    dateCell.textContent = date;
-                    timeCell.textContent = time;
-                    singleKayakCell.textContent = singleKayakQuantity;
-                    doubleKayakCell.textContent = doubleKayakQuantity;
-                    sapKayakCell.textContent = sapKayakQuantity;
+                .then(responseData => {
+                    if (responseData.error) {
+                        console.error('Ошибка:', responseData.error);
+                        alert(responseData.error); // Уведомление об ошибке
+                    } else {
+                        // Добавляем данные в таблицу
+                        const tableBody = document.getElementById('booking-table').getElementsByTagName('tbody')[0];
+                        const newRow = tableBody.insertRow();
+                        newRow.insertCell(0).textContent = responseData.date;
+                        newRow.insertCell(1).textContent = responseData.time;
+                        newRow.insertCell(2).textContent = singleKayakQuantity;
+                        newRow.insertCell(3).textContent = doubleKayakQuantity;
+                        newRow.insertCell(4).textContent = sapKayakQuantity;
 
-                    // Очистка формы после отправки
-                    document.getElementById('reservation-form').reset();
+                        // Очистка формы
+                        document.getElementById('reservation-form').reset();
+                    }
                 })
-                .catch(error => console.error('Ошибка:', error));
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    alert('Ошибка при отправке данных');
+                });
             });
         });
     </script>
@@ -59,6 +61,7 @@
     <header>
         <h1>Бронирование каяков</h1>
     </header>
+
     <main>
         <form id="reservation-form">
             <label for="date">Дата:</label>
@@ -134,3 +137,4 @@
     </footer>
 </body>
 </html>
+
