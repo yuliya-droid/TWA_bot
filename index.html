@@ -6,77 +6,55 @@
     <title>Бронирование каяков</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script>
-        const API_URL = 'https://script.google.com/macros/library/d/10rbwdsn31cZCKoVzzZ5ZnswW7QriIZNz8IorEzs16xzFJS7S8AN5C1OA/1'; // Замените на ваш URL
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('submit').addEventListener('click', function() {
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+            const singleKayakQuantity = document.getElementById('single-kayak-quantity').value;
+            const doubleKayakQuantity = document.getElementById('double-kayak-quantity').value;
+            const sapKayakQuantity = document.getElementById('sap-kayak-quantity').value;
+            
+            const data = {
+                date,
+                time,
+                singleKayakQuantity,
+                doubleKayakQuantity,
+                sapKayakQuantity
+            };
 
-        document.addEventListener('DOMContentLoaded', function() {
-            // Получение данных о доступных каяках при загрузке страницы
-            fetchKayakData();
-
-            document.getElementById('submit').addEventListener('click', async function() {
-                const date = document.getElementById('date').value;
-                const time = document.getElementById('time').value;
-                const singleKayakQuantity = document.getElementById('single-kayak-quantity').value;
-                const doubleKayakQuantity = document.getElementById('double-kayak-quantity').value;
-                const sapKayakQuantity = document.getElementById('sap-kayak-quantity').value;
-                
-                const data = { date, time, singleKayakQuantity, doubleKayakQuantity, sapKayakQuantity };
-                console.log('Booking data:', data);
-
-                // Отправка данных в Google Apps Script
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                const result = await response.json();
-                updateBookingTable(result);
+            fetch('https://script.google.com/macros/s/AKfycbxWJZRv2qPtfe9tGq9qP75sKBeamGyYwTPm7hFkFutexwK6RVM1m122ZhPMQ1CmKbb4/exec', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response:', data);
+                // Обновление таблицы бронирований
+                const tableBody = document.getElementById('booking-table').getElementsByTagName('tbody')[0];
+                const newRow = tableBody.insertRow();
+                const dateCell = newRow.insertCell(0);
+                const timeCell = newRow.insertCell(1);
+                const singleKayakCell = newRow.insertCell(2);
+                const doubleKayakCell = newRow.insertCell(3);
+                const sapKayakCell = newRow.insertCell(4);
+                dateCell.textContent = date;
+                timeCell.textContent = time;
+                singleKayakCell.textContent = singleKayakQuantity;
+                doubleKayakCell.textContent = doubleKayakQuantity;
+                sapKayakCell.textContent = sapKayakQuantity;
 
                 // Очистка формы после отправки
                 document.getElementById('reservation-form').reset();
-            });
+            })
+            .catch(error => console.error('Ошибка:', error));
         });
+    });
+</script>
 
-        async function fetchKayakData() {
-            try {
-                const response = await fetch(API_URL);
-                const data = await response.json();
-                updateKayakOptions(data);
-            } catch (error) {
-                console.error('Ошибка при получении данных о каяках:', error);
-            }
-        }
-
-        function updateKayakOptions(data) {
-            updateSelectOptions('single-kayak-quantity', data.singleKayaks);
-            updateSelectOptions('double-kayak-quantity', data.doubleKayaks);
-            updateSelectOptions('sap-kayak-quantity', data.sapKayaks);
-        }
-
-        function updateSelectOptions(selectId, maxQuantity) {
-            const selectElement = document.getElementById(selectId);
-            selectElement.innerHTML = '';
-            for (let i = 0; i <= maxQuantity; i++) {
-                const option = document.createElement('option');
-                option.value = i;
-                option.textContent = i;
-                selectElement.appendChild(option);
-            }
-        }
-
-        function updateBookingTable(bookingData) {
-            const tableBody = document.getElementById('booking-table').getElementsByTagName('tbody')[0];
-            const newRow = tableBody.insertRow();
-            newRow.insertCell(0).textContent = bookingData.date;
-            newRow.insertCell(1).textContent = bookingData.time;
-            newRow.insertCell(2).textContent = bookingData.singleKayakQuantity;
-            newRow.insertCell(3).textContent = bookingData.doubleKayakQuantity;
-            newRow.insertCell(4).textContent = bookingData.sapKayakQuantity;
-        }
-    </script>
 </head>
 <body>
     <header>
