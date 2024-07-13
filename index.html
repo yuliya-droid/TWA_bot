@@ -1,66 +1,64 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Бронирование каяков</title>
+    <title>Kayak Reservation</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('submit').addEventListener('click', function() {
-            const date = document.getElementById('date').value;
-            const time = document.getElementById('time').value;
-            const singleKayakQuantity = document.getElementById('single-kayak-quantity').value;
-            const doubleKayakQuantity = document.getElementById('double-kayak-quantity').value;
-            const sapKayakQuantity = document.getElementById('sap-kayak-quantity').value;
-            
-            const data = {
-                date,
-                time,
-                singleKayakQuantity,
-                doubleKayakQuantity,
-                sapKayakQuantity
-            };
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('submit').addEventListener('click', function() {
+                const date = document.getElementById('date').value;
+                const time = document.getElementById('time').value;
+                const singleKayakQuantity = document.getElementById('single-kayak-quantity').value;
+                const doubleKayakQuantity = document.getElementById('double-kayak-quantity').value;
+                const sapKayakQuantity = document.getElementById('sap-kayak-quantity').value;
+                
+                const data = {
+                    date,
+                    time,
+                    singleKayakQuantity,
+                    doubleKayakQuantity,
+                    sapKayakQuantity
+                };
 
-            fetch('https://script.google.com/macros/s/AKfycbxWJZRv2qPtfe9tGq9qP75sKBeamGyYwTPm7hFkFutexwK6RVM1m122ZhPMQ1CmKbb4/exec', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Response:', data);
-                // Обновление таблицы бронирований
-                const tableBody = document.getElementById('booking-table').getElementsByTagName('tbody')[0];
-                const newRow = tableBody.insertRow();
-                const dateCell = newRow.insertCell(0);
-                const timeCell = newRow.insertCell(1);
-                const singleKayakCell = newRow.insertCell(2);
-                const doubleKayakCell = newRow.insertCell(3);
-                const sapKayakCell = newRow.insertCell(4);
-                dateCell.textContent = date;
-                timeCell.textContent = time;
-                singleKayakCell.textContent = singleKayakQuantity;
-                doubleKayakCell.textContent = doubleKayakQuantity;
-                sapKayakCell.textContent = sapKayakQuantity;
+                fetch('https://script.google.com/macros/s/AKfycbxWJZRv2qPtfe9tGq9qP75sKBeamGyYwTPm7hFkFutexwK6RVM1m122ZhPMQ1CmKbb4/exec', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Response:', data);
+                    // Обновление таблицы бронирований
+                    const tableBody = document.getElementById('booking-table').getElementsByTagName('tbody')[0];
+                    const newRow = tableBody.insertRow();
+                    const dateCell = newRow.insertCell(0);
+                    const timeCell = newRow.insertCell(1);
+                    const singleKayakCell = newRow.insertCell(2);
+                    const doubleKayakCell = newRow.insertCell(3);
+                    const sapKayakCell = newRow.insertCell(4);
+                    dateCell.textContent = date;
+                    timeCell.textContent = time;
+                    singleKayakCell.textContent = singleKayakQuantity;
+                    doubleKayakCell.textContent = doubleKayakQuantity;
+                    sapKayakCell.textContent = sapKayakQuantity;
 
-                // Очистка формы после отправки
-                document.getElementById('reservation-form').reset();
-            })
-            .catch(error => console.error('Ошибка:', error));
+                    // Очистка формы после отправки
+                    document.getElementById('reservation-form').reset();
+                })
+                .catch(error => console.error('Ошибка:', error));
+            });
         });
-    });
-</script>
-
+    </script>
 </head>
 <body>
     <header>
         <h1>Бронирование каяков</h1>
     </header>
-
     <main>
         <form id="reservation-form">
             <label for="date">Дата:</label>
