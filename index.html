@@ -3,51 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kayak Reservation</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script>
-        // Ваши скрипты здесь
-    </script>
+    <title>Бронирование каяков</title>
 </head>
 <body>
-    <header>
-        <h1>Бронирование каяков</h1>
-    </header>
+    <h1>Бронирование каяков</h1>
+    <form id="bookingForm">
+        <label for="date">Дата:</label>
+        <select id="date" name="date"></select>
+        <br><br>
+        <label for="time">Время:</label>
+        <select id="time" name="time"></select>
+        <br><br>
+        <label for="kayakType">Тип каяка:</label>
+        <select id="kayakType" name="kayakType">
+            <option value="single">Одноместный</option>
+            <option value="double">Двухместный</option>
+            <option value="sup">САП</option>
+        </select>
+        <br><br>
+        <button type="button" onclick="submitForm()">Забронировать</button>
+    </form>
 
-    <main>
-        <form id="reservation-form">
-            <label for="date">Дата:</label>
-            <input type="date" id="date" name="date" required>
-            <br>
-            <label for="time">Время:</label>
-            <input type="time" id="time" name="time" required>
-            <br>
-            <button type="button" id="submit">Забронировать</button>
-        </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const dates = ["12.07.2024", "13.07.2024", "14.07.2024"];
+            const times = ["8:00", "8:30", "9:00", "9:30", "10:00"];
 
-        <!-- Таблица с бронированием каяков -->
-        <table id="booking-table">
-            <thead>
-                <tr>
-                    <th>Дата</th>
-                    <th>Время</th>
-                    <th>Каяки</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Здесь будут строки с данными из Google Таблицы -->
-            </tbody>
-        </table>
+            const dateSelect = document.getElementById("date");
+            dates.forEach(date => {
+                let option = document.createElement("option");
+                option.value = date;
+                option.text = date;
+                dateSelect.appendChild(option);
+            });
 
-        <!-- Фотография под таблицей -->
-        <div class="photo">
-            <img src="photo.jpg" alt="Фото каяка">
-        </div>
-    </main>
+            const timeSelect = document.getElementById("time");
+            times.forEach(time => {
+                let option = document.createElement("option");
+                option.value = time;
+                option.text = time;
+                timeSelect.appendChild(option);
+            });
+        });
 
-    <footer>
-        <!-- Ваш футер -->
-    </footer>
+        function submitForm() {
+            const date = document.getElementById("date").value;
+            const time = document.getElementById("time").value;
+            const kayakType = document.getElementById("kayakType").value;
+
+            const data = { date, time, kayakType };
+
+            // Отправка данных в Telegram бота
+            Telegram.WebApp.sendData(JSON.stringify(data));
+        }
+    </script>
 </body>
 </html>
