@@ -8,10 +8,58 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Функция для обновления количества доступных каяков
+            function updateKayakOptions(data) {
+                const singleKayakSelect = document.getElementById('single-kayak-quantity');
+                const doubleKayakSelect = document.getElementById('double-kayak-quantity');
+                const sapKayakSelect = document.getElementById('sap-kayak-quantity');
+
+                singleKayakSelect.innerHTML = '';
+                doubleKayakSelect.innerHTML = '';
+                sapKayakSelect.innerHTML = '';
+
+                for (let i = 0; i <= data.singleKayaks; i++) {
+                    let option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i;
+                    singleKayakSelect.appendChild(option);
+                }
+
+                for (let i = 0; i <= data.doubleKayaks; i++) {
+                    let option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i;
+                    doubleKayakSelect.appendChild(option);
+                }
+
+                for (let i = 0; i <= data.sapKayaks; i++) {
+                    let option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i;
+                    sapKayakSelect.appendChild(option);
+                }
+            }
+
+            // Функция для получения данных из Google Таблицы
+            async function fetchKayakData() {
+                try {
+                    const response = await fetch('URL_TO_YOUR_API');
+                    const data = await response.json();
+                    updateKayakOptions(data);
+                } catch (error) {
+                    console.error('Error fetching kayak data:', error);
+                }
+            }
+
+            fetchKayakData();
+
             document.getElementById('submit').addEventListener('click', function() {
                 const date = document.getElementById('date').value;
                 const time = document.getElementById('time').value;
-                const data = { date, time };
+                const singleKayakQuantity = document.getElementById('single-kayak-quantity').value;
+                const doubleKayakQuantity = document.getElementById('double-kayak-quantity').value;
+                const sapKayakQuantity = document.getElementById('sap-kayak-quantity').value;
+                const data = { date, time, singleKayakQuantity, doubleKayakQuantity, sapKayakQuantity };
                 console.log('Booking data:', data);
 
                 // Отправка данных в Telegram
@@ -22,10 +70,14 @@
                 const newRow = tableBody.insertRow();
                 const dateCell = newRow.insertCell(0);
                 const timeCell = newRow.insertCell(1);
-                const kayakCell = newRow.insertCell(2);
+                const singleKayakCell = newRow.insertCell(2);
+                const doubleKayakCell = newRow.insertCell(3);
+                const sapKayakCell = newRow.insertCell(4);
                 dateCell.textContent = date;
                 timeCell.textContent = time;
-                kayakCell.textContent = '1 каяк'; // Примерное значение, можно изменить
+                singleKayakCell.textContent = singleKayakQuantity;
+                doubleKayakCell.textContent = doubleKayakQuantity;
+                sapKayakCell.textContent = sapKayakQuantity;
 
                 // Очистка формы после отправки
                 document.getElementById('reservation-form').reset();
@@ -46,6 +98,21 @@
             <label for="time">Время:</label>
             <input type="time" id="time" name="time" required>
             <br>
+            <label for="single-kayak-quantity">Количество одноместных каяков:</label>
+            <select id="single-kayak-quantity" name="single-kayak-quantity" required>
+                <!-- Опции будут добавлены динамически -->
+            </select>
+            <br>
+            <label for="double-kayak-quantity">Количество двухместных каяков:</label>
+            <select id="double-kayak-quantity" name="double-kayak-quantity" required>
+                <!-- Опции будут добавлены динамически -->
+            </select>
+            <br>
+            <label for="sap-kayak-quantity">Количество САП:</label>
+            <select id="sap-kayak-quantity" name="sap-kayak-quantity" required>
+                <!-- Опции будут добавлены динамически -->
+            </select>
+            <br>
             <button type="button" id="submit">Забронировать</button>
         </form>
 
@@ -55,7 +122,9 @@
                 <tr>
                     <th>Дата</th>
                     <th>Время</th>
-                    <th>Каяки</th>
+                    <th>Одноместные каяки</th>
+                    <th>Двухместные каяки</th>
+                    <th>САП</th>
                 </tr>
             </thead>
             <tbody>
@@ -74,3 +143,4 @@
     </footer>
 </body>
 </html>
+
