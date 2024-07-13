@@ -3,59 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Бронирование каяков</title>
+    <title>Kayak Booking</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Бронирование каяков</h1>
-    <form id="bookingForm">
-        <label for="date">Дата:</label>
-        <select id="date" name="date"></select>
-        <br><br>
-        <label for="time">Время:</label>
-        <select id="time" name="time"></select>
-        <br><br>
-        <label for="kayakType">Тип каяка:</label>
-        <select id="kayakType" name="kayakType">
-            <option value="single">Одноместный</option>
-            <option value="double">Двухместный</option>
-            <option value="sup">САП</option>
-        </select>
-        <br><br>
-        <button type="button" onclick="submitForm()">Забронировать</button>
-    </form>
-
+    <header>
+        <h1>Забронировать каяк</h1>
+    </header>
+    <main>
+        <div class="reservation-form">
+            <h2>Выберите дату и время</h2>
+            <form id="bookingForm">
+                <label for="date">Дата:</label>
+                <input type="date" id="date" name="date">
+                
+                <label for="time">Время:</label>
+                <input type="time" id="time" name="time">
+                
+                <label for="kayakType">Тип каяка:</label>
+                <select id="kayakType" name="kayakType">
+                    <option value="single">Одноместный</option>
+                    <option value="double">Двухместный</option>
+                    <option value="sup">САП</option>
+                </select>
+                
+                <button type="button" id="bookButton">Забронировать</button>
+            </form>
+        </div>
+        <div class="booking-status" id="bookingStatus"></div>
+        <div class="photo">
+            <img src="your-image-url.jpg" alt="Kayak Image">
+        </div>
+    </main>
     <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const dates = ["12.07.2024", "13.07.2024", "14.07.2024"];
-            const times = ["8:00", "8:30", "9:00", "9:30", "10:00"];
-
-            const dateSelect = document.getElementById("date");
-            dates.forEach(date => {
-                let option = document.createElement("option");
-                option.value = date;
-                option.text = date;
-                dateSelect.appendChild(option);
-            });
-
-            const timeSelect = document.getElementById("time");
-            times.forEach(time => {
-                let option = document.createElement("option");
-                option.value = time;
-                option.text = time;
-                timeSelect.appendChild(option);
-            });
-        });
-
-        function submitForm() {
-            const date = document.getElementById("date").value;
-            const time = document.getElementById("time").value;
-            const kayakType = document.getElementById("kayakType").value;
+        document.getElementById('bookButton').addEventListener('click', function() {
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+            const kayakType = document.getElementById('kayakType').value;
 
             const data = { date, time, kayakType };
+            console.log('Booking data:', data);
 
-            // Отправка данных в Telegram бота
-            Telegram.WebApp.sendData(JSON.stringify(data));
-        }
+            // Отправка данных в Telegram
+            window.Telegram.WebApp.sendData(JSON.stringify(data));
+
+            // Обновление статуса бронирования
+            document.getElementById('bookingStatus').textContent = `Бронирование: ${date} в ${time} для ${kayakType} каяка отправлено!`;
+        });
     </script>
 </body>
 </html>
+
