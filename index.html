@@ -3,54 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kayak Booking</title>
+    <title>Kayak Reservation</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('submit').addEventListener('click', function() {
+                const date = document.getElementById('date').value;
+                const time = document.getElementById('time').value;
+                const data = { date, time };
+                console.log('Booking data:', data);
+
+                // Отправка данных в Telegram
+                window.Telegram.WebApp.sendData(JSON.stringify(data));
+
+                // Обновление таблицы бронирований
+                const tableBody = document.getElementById('booking-table').getElementsByTagName('tbody')[0];
+                const newRow = tableBody.insertRow();
+                const dateCell = newRow.insertCell(0);
+                const timeCell = newRow.insertCell(1);
+                const kayakCell = newRow.insertCell(2);
+                dateCell.textContent = date;
+                timeCell.textContent = time;
+                kayakCell.textContent = '1 каяк'; // Примерное значение, можно изменить
+
+                // Очистка формы после отправки
+                document.getElementById('reservation-form').reset();
+            });
+        });
+    </script>
 </head>
 <body>
     <header>
-        <h1>Забронировать каяк</h1>
+        <h1>Бронирование каяков</h1>
     </header>
+
     <main>
-        <div class="reservation-form">
-            <h2>Выберите дату и время</h2>
-            <form id="bookingForm">
-                <label for="date">Дата:</label>
-                <input type="date" id="date" name="date">
-                
-                <label for="time">Время:</label>
-                <input type="time" id="time" name="time">
-                
-                <label for="kayakType">Тип каяка:</label>
-                <select id="kayakType" name="kayakType">
-                    <option value="single">Одноместный</option>
-                    <option value="double">Двухместный</option>
-                    <option value="sup">САП</option>
-                </select>
-                
-                <button type="button" id="bookButton">Забронировать</button>
-            </form>
-        </div>
-        <div class="booking-status" id="bookingStatus"></div>
+        <form id="reservation-form">
+            <label for="date">Дата:</label>
+            <input type="date" id="date" name="date" required>
+            <br>
+            <label for="time">Время:</label>
+            <input type="time" id="time" name="time" required>
+            <br>
+            <button type="button" id="submit">Забронировать</button>
+        </form>
+
+        <!-- Таблица с бронированием каяков -->
+        <table id="booking-table">
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Время</th>
+                    <th>Каяки</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Здесь будут строки с данными из Google Таблицы -->
+            </tbody>
+        </table>
+
+        <!-- Фотография под таблицей -->
         <div class="photo">
-            <img src="your-image-url.jpg" alt="Kayak Image">
+            <img src="photo.jpg" alt="Фото каяка">
         </div>
     </main>
-    <script>
-        document.getElementById('bookButton').addEventListener('click', function() {
-            const date = document.getElementById('date').value;
-            const time = document.getElementById('time').value;
-            const kayakType = document.getElementById('kayakType').value;
 
-            const data = { date, time, kayakType };
-            console.log('Booking data:', data);
-
-            // Отправка данных в Telegram
-            window.Telegram.WebApp.sendData(JSON.stringify(data));
-
-            // Обновление статуса бронирования
-            document.getElementById('bookingStatus').textContent = `Бронирование: ${date} в ${time} для ${kayakType} каяка отправлено!`;
-        });
-    </script>
+    <footer>
+        <!-- Ваш футер -->
+    </footer>
 </body>
 </html>
-
