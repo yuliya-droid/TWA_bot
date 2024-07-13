@@ -1,16 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kayak Reservation</title>
+    <title>Бронирование каяков</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxWJZRv2qPtfe9tGq9qP75sKBeamGyYwTPm7hFkFutexwK6RVM1m122ZhPMQ1CmKbb4/exec';  // Замените на ваш URL
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxWJZRv2qPtfe9tGq9qP75sKBeamGyYwTPm7hFkFutexwK6RVM1m122ZhPMQ1CmKbb4/exec'; // Замените на ваш URL
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            await fetchKayakData();
+        document.addEventListener('DOMContentLoaded', function() {
+            // Получение данных о доступных каяках при загрузке страницы
+            fetchKayakData();
+
+            document.getElementById('submit').addEventListener('click', async function() {
+                const date = document.getElementById('date').value;
+                const time = document.getElementById('time').value;
+                const singleKayakQuantity = document.getElementById('single-kayak-quantity').value;
+                const doubleKayakQuantity = document.getElementById('double-kayak-quantity').value;
+                const sapKayakQuantity = document.getElementById('sap-kayak-quantity').value;
+                
+                const data = { date, time, singleKayakQuantity, doubleKayakQuantity, sapKayakQuantity };
+                console.log('Booking data:', data);
+
+                // Отправка данных в Google Apps Script
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                updateBookingTable(result);
+
+                // Очистка формы после отправки
+                document.getElementById('reservation-form').reset();
+            });
         });
 
         async function fetchKayakData() {
@@ -19,21 +46,18 @@
                 const data = await response.json();
                 updateKayakOptions(data);
             } catch (error) {
-                console.error('Error fetching kayak data:', error);
+                console.error('Ошибка при получении данных о каяках:', error);
             }
         }
 
         function updateKayakOptions(data) {
-            const singleKayakSelect = document.getElementById('single-kayak-quantity');
-            const doubleKayakSelect = document.getElementById('double-kayak-quantity');
-            const sapKayakSelect = document.getElementById('sap-kayak-quantity');
-
-            updateSelectOptions(singleKayakSelect, data.singleKayaks);
-            updateSelectOptions(doubleKayakSelect, data.doubleKayaks);
-            updateSelectOptions(sapKayakSelect, data.sapKayaks);
+            updateSelectOptions('single-kayak-quantity', data.singleKayaks);
+            updateSelectOptions('double-kayak-quantity', data.doubleKayaks);
+            updateSelectOptions('sap-kayak-quantity', data.sapKayaks);
         }
 
-        function updateSelectOptions(selectElement, maxQuantity) {
+        function updateSelectOptions(selectId, maxQuantity) {
+            const selectElement = document.getElementById(selectId);
             selectElement.innerHTML = '';
             for (let i = 0; i <= maxQuantity; i++) {
                 const option = document.createElement('option');
@@ -43,13 +67,14 @@
             }
         }
 
-        function bookKayak() {
-            const date = document.getElementById('date').value;
-            const time = document.getElementById('time').value;
-            const kayakType = document.querySelector('input[name="kayak-type"]:checked').value;
-            const quantity = document.getElementById(`${kayakType}-quantity`).value;
-
-            // Ваш код бронирования тут, например, отправка данных на сервер
+        function updateBookingTable(bookingData) {
+            const tableBody = document.getElementById('booking-table').getElementsByTagName('tbody')[0];
+            const newRow = tableBody.insertRow();
+            newRow.insertCell(0).textContent = bookingData.date;
+            newRow.insertCell(1).textContent = bookingData.time;
+            newRow.insertCell(2).textContent = bookingData.singleKayakQuantity;
+            newRow.insertCell(3).textContent = bookingData.doubleKayakQuantity;
+            newRow.insertCell(4).textContent = bookingData.sapKayakQuantity;
         }
     </script>
 </head>
@@ -66,21 +91,44 @@
             <label for="time">Время:</label>
             <input type="time" id="time" name="time" required>
             <br>
-            <label>Тип каяка:</label>
+            <label for="single-kayak-quantity">Количество одноместных каяков:</label>
+            <select id="single-kayak-quantity" name="single-kayak-quantity" required>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+            </select>
             <br>
-            <input type="radio" id="single" name="kayak-type" value="single-kayak" required>
-            <label for="single">Одноместный каяк</label>
-            <select id="single-kayak-quantity"></select>
+            <label for="double-kayak-quantity">Количество двухместных каяков:</label>
+            <select id="double-kayak-quantity" name="double-kayak-quantity" required>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select>
             <br>
-            <input type="radio" id="double" name="kayak-type" value="double-kayak">
-            <label for="double">Двухместный каяк</label>
-            <select id="double-kayak-quantity"></select>
+            <label for="sap-kayak-quantity">Количество САП:</label>
+            <select id="sap-kayak-quantity" name="sap-kayak-quantity" required>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+            </select>
             <br>
-            <input type="radio" id="sap" name="kayak-type" value="sap-kayak">
-            <label for="sap">САП</label>
-            <select id="sap-kayak-quantity"></select>
-            <br>
-            <button type="button" id="submit" onclick="bookKayak()">Забронировать</button>
+            <button type="button" id="submit">Забронировать</button>
         </form>
 
         <!-- Таблица с бронированием каяков -->
@@ -89,7 +137,9 @@
                 <tr>
                     <th>Дата</th>
                     <th>Время</th>
-                    <th>Каяки</th>
+                    <th>Одноместные каяки</th>
+                    <th>Двухместные каяки</th>
+                    <th>САП</th>
                 </tr>
             </thead>
             <tbody>
