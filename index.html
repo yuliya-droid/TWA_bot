@@ -7,82 +7,50 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Функция для обновления количества доступных каяков
-            function updateKayakOptions(data) {
-                const singleKayakSelect = document.getElementById('single-kayak-quantity');
-                const doubleKayakSelect = document.getElementById('double-kayak-quantity');
-                const sapKayakSelect = document.getElementById('sap-kayak-quantity');
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxWJZRv2qPtfe9tGq9qP75sKBeamGyYwTPm7hFkFutexwK6RVM1m122ZhPMQ1CmKbb4/exec';  // Замените на ваш URL
 
-                singleKayakSelect.innerHTML = '';
-                doubleKayakSelect.innerHTML = '';
-                sapKayakSelect.innerHTML = '';
-
-                for (let i = 0; i <= data.singleKayaks; i++) {
-                    let option = document.createElement('option');
-                    option.value = i;
-                    option.textContent = i;
-                    singleKayakSelect.appendChild(option);
-                }
-
-                for (let i = 0; i <= data.doubleKayaks; i++) {
-                    let option = document.createElement('option');
-                    option.value = i;
-                    option.textContent = i;
-                    doubleKayakSelect.appendChild(option);
-                }
-
-                for (let i = 0; i <= data.sapKayaks; i++) {
-                    let option = document.createElement('option');
-                    option.value = i;
-                    option.textContent = i;
-                    sapKayakSelect.appendChild(option);
-                }
-            }
-
-            // Функция для получения данных из Google Таблицы
-            async function fetchKayakData() {
-                try {
-                    const response = await fetch('URL_TO_YOUR_API');
-                    const data = await response.json();
-                    updateKayakOptions(data);
-                } catch (error) {
-                    console.error('Error fetching kayak data:', error);
-                }
-            }
-
-            fetchKayakData();
-
-            document.getElementById('submit').addEventListener('click', function() {
-                const date = document.getElementById('date').value;
-                const time = document.getElementById('time').value;
-                const singleKayakQuantity = document.getElementById('single-kayak-quantity').value;
-                const doubleKayakQuantity = document.getElementById('double-kayak-quantity').value;
-                const sapKayakQuantity = document.getElementById('sap-kayak-quantity').value;
-                const data = { date, time, singleKayakQuantity, doubleKayakQuantity, sapKayakQuantity };
-                console.log('Booking data:', data);
-
-                // Отправка данных в Telegram
-                window.Telegram.WebApp.sendData(JSON.stringify(data));
-
-                // Обновление таблицы бронирований
-                const tableBody = document.getElementById('booking-table').getElementsByTagName('tbody')[0];
-                const newRow = tableBody.insertRow();
-                const dateCell = newRow.insertCell(0);
-                const timeCell = newRow.insertCell(1);
-                const singleKayakCell = newRow.insertCell(2);
-                const doubleKayakCell = newRow.insertCell(3);
-                const sapKayakCell = newRow.insertCell(4);
-                dateCell.textContent = date;
-                timeCell.textContent = time;
-                singleKayakCell.textContent = singleKayakQuantity;
-                doubleKayakCell.textContent = doubleKayakQuantity;
-                sapKayakCell.textContent = sapKayakQuantity;
-
-                // Очистка формы после отправки
-                document.getElementById('reservation-form').reset();
-            });
+        document.addEventListener('DOMContentLoaded', async () => {
+            await fetchKayakData();
         });
+
+        async function fetchKayakData() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                updateKayakOptions(data);
+            } catch (error) {
+                console.error('Error fetching kayak data:', error);
+            }
+        }
+
+        function updateKayakOptions(data) {
+            const singleKayakSelect = document.getElementById('single-kayak-quantity');
+            const doubleKayakSelect = document.getElementById('double-kayak-quantity');
+            const sapKayakSelect = document.getElementById('sap-kayak-quantity');
+
+            updateSelectOptions(singleKayakSelect, data.singleKayaks);
+            updateSelectOptions(doubleKayakSelect, data.doubleKayaks);
+            updateSelectOptions(sapKayakSelect, data.sapKayaks);
+        }
+
+        function updateSelectOptions(selectElement, maxQuantity) {
+            selectElement.innerHTML = '';
+            for (let i = 0; i <= maxQuantity; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                selectElement.appendChild(option);
+            }
+        }
+
+        function bookKayak() {
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+            const kayakType = document.querySelector('input[name="kayak-type"]:checked').value;
+            const quantity = document.getElementById(`${kayakType}-quantity`).value;
+
+            // Ваш код бронирования тут, например, отправка данных на сервер
+        }
     </script>
 </head>
 <body>
@@ -98,22 +66,21 @@
             <label for="time">Время:</label>
             <input type="time" id="time" name="time" required>
             <br>
-            <label for="single-kayak-quantity">Количество одноместных каяков:</label>
-            <select id="single-kayak-quantity" name="single-kayak-quantity" required>
-                <!-- Опции будут добавлены динамически -->
-            </select>
+            <label>Тип каяка:</label>
             <br>
-            <label for="double-kayak-quantity">Количество двухместных каяков:</label>
-            <select id="double-kayak-quantity" name="double-kayak-quantity" required>
-                <!-- Опции будут добавлены динамически -->
-            </select>
+            <input type="radio" id="single" name="kayak-type" value="single-kayak" required>
+            <label for="single">Одноместный каяк</label>
+            <select id="single-kayak-quantity"></select>
             <br>
-            <label for="sap-kayak-quantity">Количество САП:</label>
-            <select id="sap-kayak-quantity" name="sap-kayak-quantity" required>
-                <!-- Опции будут добавлены динамически -->
-            </select>
+            <input type="radio" id="double" name="kayak-type" value="double-kayak">
+            <label for="double">Двухместный каяк</label>
+            <select id="double-kayak-quantity"></select>
             <br>
-            <button type="button" id="submit">Забронировать</button>
+            <input type="radio" id="sap" name="kayak-type" value="sap-kayak">
+            <label for="sap">САП</label>
+            <select id="sap-kayak-quantity"></select>
+            <br>
+            <button type="button" id="submit" onclick="bookKayak()">Забронировать</button>
         </form>
 
         <!-- Таблица с бронированием каяков -->
@@ -122,9 +89,7 @@
                 <tr>
                     <th>Дата</th>
                     <th>Время</th>
-                    <th>Одноместные каяки</th>
-                    <th>Двухместные каяки</th>
-                    <th>САП</th>
+                    <th>Каяки</th>
                 </tr>
             </thead>
             <tbody>
@@ -143,4 +108,3 @@
     </footer>
 </body>
 </html>
-
