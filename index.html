@@ -87,59 +87,6 @@
     </footer>
 
     <script>
-        
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('submit').addEventListener('click', async function() {
-        const date = document.getElementById('date').value;
-        const time = document.getElementById('time').value;
-        const singleKayakQuantity = document.getElementById('single-kayak-quantity').value;
-        const doubleKayakQuantity = document.getElementById('double-kayak-quantity').value;
-        const sapKayakQuantity = document.getElementById('sap-kayak-quantity').value;
-
-        const data = {
-            date,
-            time,
-            singleKayakQuantity: parseInt(singleKayakQuantity),
-            doubleKayakQuantity: parseInt(doubleKayakQuantity),
-            sapKayakQuantity: parseInt(sapKayakQuantity)
-        };
-
-        console.log('Отправляемые данные:', data); // Логирование данных
-
-        try {
-            const response = await fetch('https://script.google.com/macros/s/AKfycbxhTzybmJ3XdBDR_MMJxOIPmc0W2Hw7Lvt6a6mk-GTq0b76wl2Yo9S6r1nxEH5AbLKJ/exec', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-
-            const responseData = await response.json();
-
-            if (responseData.error) {
-                console.error('Ошибка:', responseData.error);
-                alert(responseData.error);
-            } else {
-                const tableBody = document.getElementById('booking-table').getElementsByTagName('tbody')[0];
-                const newRow = tableBody.insertRow();
-                newRow.insertCell(0).textContent = responseData.date;
-                newRow.insertCell(1).textContent = responseData.time;
-                newRow.insertCell(2).textContent = responseData.singleKayakQuantity;
-                newRow.insertCell(3).textContent = responseData.doubleKayakQuantity;
-                newRow.insertCell(4).textContent = responseData.sapKayakQuantity;
-
-                document.getElementById('reservation-form').reset();
-            }
-        } catch (error) {
-            console.error('Ошибка при отправке данных:', error);
-            alert('Ошибка при отправке данных');
-        }
-    });
-});
-
-        
-        
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('submit').addEventListener('click', async function() {
                 const date = document.getElementById('date').value;
@@ -156,14 +103,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     sapKayakQuantity: parseInt(sapKayakQuantity)
                 };
 
+                console.log('Отправляемые данные:', data); // Логирование данных
+
                 try {
-                    const response = await fetch('https://script.google.com/macros/s/AKfycbytMcbO-g44iXNcfm4ct7UP8Xtvv9alFErfzjhoieWRt32ELId1CI6jAuoP3bSSJLCK/exec', {
+                    const response = await fetch('https://script.google.com/macros/s/AKfycbz9wANDWUb8aDsDQPwVXZ280wuEOTPoY4hkY_pS9sqLGZ4_uspndCUDSeRh2qQ5WAb9/exec', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify(data)
                     });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
 
                     const responseData = await response.json();
 
@@ -179,14 +132,4 @@ document.addEventListener('DOMContentLoaded', function() {
                         newRow.insertCell(3).textContent = responseData.doubleKayakQuantity;
                         newRow.insertCell(4).textContent = responseData.sapKayakQuantity;
 
-                        document.getElementById('reservation-form').reset();
-                    }
-                } catch (error) {
-                    console.error('Ошибка при отправке данных:', error);
-                    alert('Ошибка при отправке данных');
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+                        document.getElementById('reservation-form
