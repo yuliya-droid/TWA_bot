@@ -66,7 +66,9 @@
                 <tr>
                     <th>Дата</th>
                     <th>Время</th>
-                    <th>Каяки</th>
+                    <th>Одноместные каяки</th>
+                    <th>Двухместные каяки</th>
+                    <th>САПы</th>
                 </tr>
             </thead>
             <tbody>
@@ -79,7 +81,6 @@
             <img src="photo.jpg" alt="Фото каяка">
         </div>
     </main>
-
 
     <footer>
         <!-- Ваш футер -->
@@ -111,10 +112,6 @@
                         body: JSON.stringify(data)
                     });
 
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
-                    }
-
                     const responseData = await response.json();
 
                     if (responseData.error) {
@@ -131,4 +128,13 @@
 
                         document.getElementById('reservation-form').reset();
                     }
-               
+                } catch (error) {
+                    console.error('Ошибка при отправке данных:', error);
+                    alert('Ошибка при отправке данных');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
