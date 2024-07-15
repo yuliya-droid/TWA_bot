@@ -74,3 +74,18 @@ form button:hover {
     max-width: 100%; /* Максимальная ширина изображения */
     height: auto; /* Автоматическая высота для сохранения пропорций */
 }
+
+#confirmation-message {
+        display: none;
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #4CAF50;
+        background-color: #dff0d8;
+        color: #3c763d;
+    }
+
+
+
+
+
+
