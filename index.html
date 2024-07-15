@@ -129,6 +129,7 @@
                 try {
                     const response = await fetch('https://script.google.com/macros/s/AKfycbxVlLY2I_yTgSCpd3xr_U5V3JPz5xZvza6IQjFpvb4H0bMvIFrnrMq-tTTIIY5_IM_K/exec', {
                         method: 'POST',
+                        mode: 'no-cors',
                         headers: {
                             'Content-Type': 'application/json'
                         },
