@@ -60,6 +60,9 @@
             <button type="button" id="submit">Забронировать</button>
         </form>
 
+        <!-- Сообщение о бронировании -->
+        <div id="confirmation-message"></div>
+        
         <!-- Таблица с бронированием каяков -->
         <table id="booking-table">
             <thead>
@@ -106,7 +109,7 @@
                 console.log('Отправляемые данные:', data); // Логирование данных
 
                 try {
-                    const response = await fetch('https://script.google.com/macros/s/AKfycbwKrOuyxV4ZDoJl3gIaY0sF3Kz-2Nw00fNlc-GbHCpylUtvyPVnli7BpVlTKzPMncwc/exec', {
+                    const response = await fetch('https://script.google.com/macros/s/AKfycbxVlLY2I_yTgSCpd3xr_U5V3JPz5xZvza6IQjFpvb4H0bMvIFrnrMq-tTTIIY5_IM_K/exec', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
